@@ -1,5 +1,7 @@
 import numpy as np
 
+BOARD_SIZE = 8 # 8x8
+
 class Piece:
     def __init__(self, orientations):
         self.orientations = orientations
@@ -36,8 +38,8 @@ class Piece:
 
 class Octogram:
     def __init__(self, pieces):
-        self.n_rows = 8
-        self.n_cols = 8
+        self.n_rows = BOARD_SIZE
+        self.n_cols = BOARD_SIZE
         self.board = [[0 for i in range(self.n_rows)] for j in range(self.n_cols)]
         self.available_pieces = pieces
         self.unavailable_pieces = []
@@ -433,23 +435,6 @@ class Octogram:
         piece = Piece(orientations=orientations)
         self.available_pieces.append(piece)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def solve_octogram(self):
         if self.solve(r=0, c=0):
             self.show_solution()
@@ -457,11 +442,38 @@ class Octogram:
             print('No solution found...')
 
     def solve(self, r, c):
-        # Base Case
+        # base case
+        if r == self.n_rows:
+            c += 1
+            if c == self.n_cols:
+                return True
+            else:
+                r = 0
 
+        # recursive case
+        if self.board[r][c] != 0:
+            return self.solve(r + 1, c)
 
-        # Recursive Case
+        # consider pieces to place on board
+        for p in self.available_pieces:
+            if self.is_valid(r, c, p):
+                self.place_piece(r, c, p)
+
+                if self.solve(r + 1, c):
+                    return True
+
+                # backtrack
+                self.remove_piece(r, c, p)
+
+        return False
+
+    def is_valid(self, r, c, piece):
         pass
 
+    def place_piece(self, r, c, piece):
+        pass
+
+    def remove_piece(self, r, c, piece):
+        pass
 
     
