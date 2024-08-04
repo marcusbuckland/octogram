@@ -34,13 +34,19 @@ class Piece:
     
     def get_size(self):
         return self.size
+    
+    def row(self):
+        return self.shape[0]
+    
+    def column(self):
+        return self.shape[1]
 
 
 class Octogram:
     def __init__(self, pieces):
         self.n_rows = BOARD_SIZE
         self.n_cols = BOARD_SIZE
-        self.board = [[0 for i in range(self.n_rows)] for j in range(self.n_cols)]
+        self.board = np.matrix([[0 for i in range(self.n_rows)] for j in range(self.n_cols)])
         self.available_pieces = pieces
         self.unavailable_pieces = []
 
@@ -468,7 +474,20 @@ class Octogram:
         return False
 
     def is_valid(self, r, c, piece):
-        pass
+        # First check if the piece will fit on the board and not be "out of bounds"
+        
+        # Check row
+        if r + piece.row() > BOARD_SIZE:
+            return False
+
+        # Check column
+        if c + piece.column() > BOARD_SIZE:
+            return False
+
+        # Now check that the piece "fits" and all cells that the piece occupies are
+        # available on the board.
+
+
 
     def place_piece(self, r, c, piece):
         pass
