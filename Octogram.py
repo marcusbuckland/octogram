@@ -22,6 +22,10 @@ class Piece:
     def display(self):
         print(self.orientations[self.orientation_index])
 
+    def get_coords(self):
+        # Coordinates for where the piece is occupying space
+        return [[r,c] for r,c in np.argwhere(self.orientation==1)]
+
     def get_n_orientations(self):
         return self.n_orientations
 
@@ -45,12 +49,11 @@ class Piece:
 
 
 class Octogram:
-    def __init__(self, pieces):
+    def __init__(self):
         self.n_rows = BOARD_SIZE
         self.n_cols = BOARD_SIZE
-        self.board = np.matrix([[0 for i in range(self.n_rows)] for j in range(self.n_cols)])
-        self.available_pieces = pieces
-        self.unavailable_pieces = []
+        self.board = np.matrix([[0 for i in range(self.n_rows)] for j in range(self.n_cols)]) # 8x8
+        self.available_pieces = []
 
     def generate_pieces(self):
         # Piece 1
@@ -459,7 +462,7 @@ class Octogram:
                 r = 0
 
         # recursive case
-        if self.board[r][c] != 0:
+        if self.board[r,c] != 0:
             return self.solve(r + 1, c)
 
         # consider pieces to place on board
@@ -472,29 +475,56 @@ class Octogram:
 
                 # backtrack
                 self.remove_piece(r, c, p)
+                p.reorient()
 
         return False
 
     def is_valid(self, r, c, piece):
-        # First check if the piece will fit on the board and not be "out of bounds"
-        
-        # Check row
+        # Check row isn't out of bounds
         if r + piece.row() > BOARD_SIZE:
             return False
 
-        # Check column
+        # Check column isn't out bounds
         if c + piece.column() > BOARD_SIZE:
             return False
 
-        # Now check that the piece "fits" and all cells that the piece occupies are
-        # available on the board.
-
-
+        # Now check that there is space on the board for the piece to fit into.
+        ixs = piece.get_coords()
+        
+        board_coords = [[r+p_r, c+p_c] for p_r, p_c in ixs]
+        return np.sum([self.board[b_r, b_c] for b_r, b_c in board_coords]) == 0
 
     def place_piece(self, r, c, piece):
-        pass
+        # Remove from available pieces as piece cannot be used more than once.
+        self.available_pieces.remove(piece)
+        
+        # Indexes that the piece "occupies the space of"
+        ixs = piece.get_coords()
+
+        # Coordinates of the board to update to 1
+        board_coords = [[r+p_r, c+p_c] for p_r, p_c in ixs]
+
+        for coord in board_coords:
+            r, c = coord
+            self.board[r,c] = 1
 
     def remove_piece(self, r, c, piece):
-        pass
+        self.available_pieces.append(piece)
+        
+        # Indexes that the piece "occupies the space of"
+        ixs = piece.get_coords()
 
+        # Coordinates of the board to make zero
+        board_coords = [[r+p_r, c+p_c] for p_r, p_c in ixs]
+
+        for coord in board_coords:
+            r, c = coord
+            self.board[r,c] = 0
+
+
+if __name__ == '__main__':
+    octogram = Octogram()
+    octogram.generate_pieces()
+    octogram.solve_octogram()
+    print(octogram.board)
     
