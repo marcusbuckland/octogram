@@ -17,6 +17,7 @@ class Piece:
     def reorient(self):
         self.orientation_index = (1 + self.orientation_index) % self.n_orientations
         self.orientation = self.orientations[self.orientation_index]
+        self.shape = self.orientation.shape
 
     def display(self):
         print(self.orientations[self.orientation_index])
@@ -30,7 +31,7 @@ class Piece:
     def get_orientation_index(self):
         return self.orientation_index
     
-    def get_shape(self):
+    def shape(self):
         return self.shape
     
     def get_size(self):
