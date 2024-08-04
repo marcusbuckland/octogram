@@ -462,7 +462,7 @@ class Octogram:
                 r = 0
 
         # recursive case
-        if self.board[r,c] != 0:
+        if self.board[r, c] != 0:
             return self.solve(r + 1, c)
 
         # consider pieces to place on board
@@ -521,10 +521,12 @@ class Octogram:
             r, c = coord
             self.board[r,c] = 0
 
+    def show_solution(self):
+        print(self.board)
+
 
 if __name__ == '__main__':
     octogram = Octogram()
     octogram.generate_pieces()
     octogram.solve_octogram()
-    print(octogram.board)
     
