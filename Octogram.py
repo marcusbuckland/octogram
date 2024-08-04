@@ -31,7 +31,7 @@ class Piece:
     def get_orientation_index(self):
         return self.orientation_index
     
-    def shape(self):
+    def get_shape(self):
         return self.shape
     
     def get_size(self):
