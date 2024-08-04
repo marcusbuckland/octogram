@@ -12,7 +12,7 @@ class Piece:
         self.size = np.sum(self.orientation)
 
     def __repr__(self):
-        return str(self.orientations[self.orientation_index])
+        return str(self.orientation)
 
     def reorient(self):
         self.orientation_index = (1 + self.orientation_index) % self.n_orientations
