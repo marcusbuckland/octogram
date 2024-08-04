@@ -447,12 +447,14 @@ class Octogram:
         self.available_pieces.append(piece)
 
     def solve_octogram(self):
-        if self.solve(r=0, c=0):
+        pieces = set(range(len(self.available_pieces)))
+        print(pieces)
+        if self.solve(r=0, c=0, pieces=pieces):
             self.show_solution()
         else:
             print('No solution found...')
 
-    def solve(self, r, c):
+    def solve(self, r, c, pieces):
         # base case
         if r == self.n_rows:
             c += 1
@@ -463,19 +465,23 @@ class Octogram:
 
         # recursive case
         if self.board[r, c] != 0:
-            return self.solve(r + 1, c)
+            return self.solve(r + 1, c, pieces)
 
         # consider pieces to place on board
-        for p in self.available_pieces:
+        for _ in range(len(pieces)):
+            i = pieces.pop()
+            p = self.available_pieces[i]
+
             if self.is_valid(r, c, p):
                 self.place_piece(r, c, p)
 
-                if self.solve(r + 1, c):
+                if self.solve(r + 1, c, pieces):
                     return True
 
                 # backtrack
                 self.remove_piece(r, c, p)
                 p.reorient()
+                pieces.add(i)
 
         return False
 
@@ -490,36 +496,34 @@ class Octogram:
 
         # Now check that there is space on the board for the piece to fit into.
         ixs = piece.get_coords()
+
+        # Check also that [r, c] will be used when placing this piece
+        if [0, 0] not in ixs : return False
         
-        board_coords = [[r+p_r, c+p_c] for p_r, p_c in ixs]
+        board_coords = [[r + p_r, c + p_c] for p_r, p_c in ixs]
         return np.sum([self.board[b_r, b_c] for b_r, b_c in board_coords]) == 0
 
-    def place_piece(self, r, c, piece):
-        # Remove from available pieces as piece cannot be used more than once.
-        self.available_pieces.remove(piece)
-        
+    def place_piece(self, r, c, piece):        
         # Indexes that the piece "occupies the space of"
         ixs = piece.get_coords()
 
         # Coordinates of the board to update to 1
-        board_coords = [[r+p_r, c+p_c] for p_r, p_c in ixs]
+        board_coords = [[r + p_r, c + p_c] for p_r, p_c in ixs]
 
         for coord in board_coords:
-            r, c = coord
-            self.board[r,c] = 1
+            x, y = coord
+            self.board[x, y] = 1
 
     def remove_piece(self, r, c, piece):
-        self.available_pieces.append(piece)
-        
         # Indexes that the piece "occupies the space of"
         ixs = piece.get_coords()
 
         # Coordinates of the board to make zero
-        board_coords = [[r+p_r, c+p_c] for p_r, p_c in ixs]
+        board_coords = [[r + p_r, c + p_c] for p_r, p_c in ixs]
 
         for coord in board_coords:
-            r, c = coord
-            self.board[r,c] = 0
+            x, y = coord
+            self.board[x, y] = 0
 
     def show_solution(self):
         print(self.board)
