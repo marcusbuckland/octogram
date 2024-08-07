@@ -54,11 +54,11 @@ class Piece:
         return self.shape[1]
 
 class Octogram:
-    def __init__(self):
+    def __init__(self, pieces):
         self.n_rows = 5
         self.n_cols = 4
         self.board = np.matrix([[0 for i in range(self.n_cols)] for j in range(self.n_rows)]) # 8x8
-        self.available_pieces = []
+        self.pieces = pieces
 
     def generate_pieces(self):
         # Piece 1
@@ -69,7 +69,7 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
         
         # Piece 2
         orientations = [
@@ -80,7 +80,7 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 3
         orientations = [
@@ -95,7 +95,7 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 4
         orientations = [
@@ -119,7 +119,7 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 5
         orientations = [
@@ -145,7 +145,7 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 6
         orientations = [
@@ -171,7 +171,7 @@ class Octogram:
             ]),
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 7
         orientations = [
@@ -197,7 +197,7 @@ class Octogram:
             ]),
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 8
         orientations = [
@@ -223,7 +223,7 @@ class Octogram:
             ]),
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 9
         orientations = [
@@ -265,7 +265,7 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 10
         orientations = [
@@ -311,7 +311,7 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 11
         orientations = [
@@ -357,7 +357,7 @@ class Octogram:
             ]),
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 12
         orientations = [
@@ -403,7 +403,7 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 13
         orientations = [
@@ -449,7 +449,7 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
     def generate_simple(self):
         # Piece 1
@@ -460,10 +460,10 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
-        self.available_pieces.append(piece)
-        self.available_pieces.append(piece)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
+        self.pieces.append(piece)
+        self.pieces.append(piece)
+        self.pieces.append(piece)
 
     def generate_small(self):
         # Piece 5
@@ -490,7 +490,7 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 10
         orientations = [
@@ -536,7 +536,7 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 3
         orientations = [
@@ -551,7 +551,7 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
         # Piece 12
         orientations = [
@@ -597,10 +597,10 @@ class Octogram:
             ])
         ]
         piece = Piece(orientations=orientations)
-        self.available_pieces.append(piece)
+        self.pieces.append(piece)
 
     def solve_octogram(self):
-        pieces = set(range(len(self.available_pieces)))
+        pieces = set(range(len(self.pieces)))
         if self.solve(r=0, c=0, pieces=pieces):
             print("great success!")
             self.show_solution()
@@ -608,10 +608,9 @@ class Octogram:
             print('No solution found...')
 
     def solve(self, r, c, pieces):
+        print(r,c)
         print(self.board)
-
-        if r > self.n_rows:
-            print("How though!?")
+        print("")
         # base case
         if r == self.n_rows:
             r = 0
@@ -636,11 +635,10 @@ class Octogram:
                     if self.solve(r + 1, c, pieces):
                         return True
                     
+                    # backtrack
+                    self.remove_piece(r, c, p)
+                    pieces.add(i)
                     p.reorient()
-
-                # backtrack
-                self.remove_piece(r, c, p)
-                pieces.add(i)
 
         return False
 
@@ -691,7 +689,7 @@ class Octogram:
         print(self.board)
 
 
-# if __name__ == '__main__':
-#     octogram = Octogram()
-#     octogram.generate_small()
-#     octogram.solve_octogram()
+if __name__ == '__main__':
+    octogram = Octogram()
+    octogram.generate_small()
+    octogram.solve_octogram()
