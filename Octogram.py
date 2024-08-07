@@ -1,7 +1,7 @@
 import numpy as np
 
-# BOARD_SIZE = 8 # 8x8
-BOARD_SIZE = 4 # 4x4
+BOARD_SIZE = 8 # 8x8
+# BOARD_SIZE = 4 # 4x4
 
 class Piece:
     def __init__(self, orientations):
@@ -49,11 +49,10 @@ class Piece:
     def column(self):
         return self.shape[1]
 
-
 class Octogram:
     def __init__(self):
-        self.n_rows = BOARD_SIZE
-        self.n_cols = BOARD_SIZE
+        self.n_rows = 5
+        self.n_cols = 4
         self.board = np.matrix([[0 for i in range(self.n_rows)] for j in range(self.n_cols)]) # 8x8
         self.available_pieces = []
 
@@ -448,7 +447,7 @@ class Octogram:
         piece = Piece(orientations=orientations)
         self.available_pieces.append(piece)
 
-    def generate_pieces_small(self):
+    def generate_pieces_4x4(self):
         # Piece 1
         orientations = [
             np.matrix([
@@ -462,8 +461,143 @@ class Octogram:
         self.available_pieces.append(piece)
         self.available_pieces.append(piece)
 
+    def generate_small(self):
+        # Piece 5
+        orientations = [
+            np.matrix([
+                [1, 1, 1],
+                [0, 1, 0],
+                [0, 1, 0]
+            ]),
+            np.matrix([
+                [0, 0, 1],
+                [1, 1, 1],
+                [0, 0, 1]
+            ]),
+            np.matrix([
+                [0, 1, 0],
+                [0, 1, 0],
+                [1, 1, 1]
+            ]),
+            np.matrix([
+                [1, 0, 0],
+                [1, 1, 1],
+                [1, 0, 0]
+            ])
+        ]
+        piece = Piece(orientations=orientations)
+        self.available_pieces.append(piece)
+
+        # Piece 10
+        orientations = [
+            np.matrix([
+                [1, 0],
+                [1, 0],
+                [1, 1],
+                [1, 0]
+            ]),
+            np.matrix([
+                [0, 1],
+                [0, 1],
+                [1, 1],
+                [0, 1]
+            ]),
+            np.matrix([
+                [1, 0],
+                [1, 1],
+                [1, 0],
+                [1, 0]
+            ]),
+            np.matrix([
+                [0, 1],
+                [1, 1],
+                [0, 1],
+                [0, 1]
+            ]),
+            np.matrix([
+                [1, 1, 1, 1],
+                [0, 1, 0, 0],
+            ]),
+            np.matrix([
+                [1, 1, 1, 1],
+                [0, 0, 1, 0],
+            ]),
+            np.matrix([
+                [0, 1, 0, 0],
+                [1, 1, 1, 1],
+            ]),
+            np.matrix([
+                [0, 0, 1, 0],
+                [1, 1, 1, 1],
+            ])
+        ]
+        piece = Piece(orientations=orientations)
+        self.available_pieces.append(piece)
+
+        # Piece 3
+        orientations = [
+            np.matrix([
+                [1],
+                [1],
+                [1],
+                [1]
+            ]),
+            np.matrix([
+                [1, 1, 1, 1],
+            ])
+        ]
+        piece = Piece(orientations=orientations)
+        self.available_pieces.append(piece)
+
+        # Piece 12
+        orientations = [
+            np.matrix([
+                [1, 0],
+                [1, 0],
+                [1, 0],
+                [1, 1]
+            ]),
+            np.matrix([
+                [0, 1],
+                [0, 1],
+                [0, 1],
+                [1, 1]
+            ]),
+            np.matrix([
+                [1, 1],
+                [1, 0],
+                [1, 0],
+                [1, 0]
+            ]),
+            np.matrix([
+                [1, 1],
+                [0, 1],
+                [0, 1],
+                [0, 1]
+            ]),
+            np.matrix([
+                [1, 1, 1, 1],
+                [1, 0, 0, 0],
+            ]),
+            np.matrix([
+                [1, 1, 1, 1],
+                [0, 0, 0, 1],
+            ]),
+            np.matrix([
+                [1, 0, 0, 0],
+                [1, 1, 1, 1],
+            ]),
+            np.matrix([
+                [0, 0, 0, 1],
+                [1, 1, 1, 1],
+            ])
+        ]
+        piece = Piece(orientations=orientations)
+        self.available_pieces.append(piece)
+
     def solve_octogram(self):
         pieces = set(range(len(self.available_pieces)))
+        print(pieces)
         if self.solve(r=0, c=0, pieces=pieces):
             print("great success!")
             self.show_solution()
@@ -471,35 +605,34 @@ class Octogram:
             print('No solution found...')
 
     def solve(self, r, c, pieces):
-        print(self.board)
-        print("")
         # base case
         if r == self.n_rows:
             c += 1
+            r = 0
             if c == self.n_cols:
                 return True
-            else:
-                r = 0
 
         # recursive case
         if self.board[r, c] != 0:
             return self.solve(r + 1, c, pieces)
 
-        # consider pieces to place on board
+        # consider all available pieces to place on board
         for _ in range(len(pieces)):
             i = pieces.pop()
             p = self.available_pieces[i]
 
-            if self.is_valid(r, c, p):
-                self.place_piece(r, c, p)
-
-                if self.solve(r + 1, c, pieces):
-                    return True
-
-                # backtrack
-                self.remove_piece(r, c, p)
+            # Now consider all possible orientations for that piece
+            for j in range(p.get_n_orientations()):
                 p.reorient()
-                pieces.add(i)
+                if self.is_valid(r, c, p):
+                    self.place_piece(r, c, p)
+
+                    if self.solve(r + 1, c, pieces):
+                        return True
+
+                    # backtrack
+                    self.remove_piece(r, c, p)
+                    pieces.add(i)
 
         return False
 
@@ -541,6 +674,10 @@ class Octogram:
 
         for coord in board_coords:
             x, y = coord
+            if x >= BOARD_SIZE:
+                print(x, y)
+            if y >= BOARD_SIZE:
+                print(x,y)
             self.board[x, y] = 0
 
     def show_solution(self):
@@ -549,6 +686,6 @@ class Octogram:
 
 if __name__ == '__main__':
     octogram = Octogram()
-    octogram.generate_pieces_small()
+    octogram.generate_small()
     octogram.solve_octogram()
     
