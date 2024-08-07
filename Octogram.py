@@ -26,7 +26,7 @@ class Piece:
 
     def get_coords(self):
         # Coordinates for where the piece is occupying space
-        return [[r,c] for r,c in np.argwhere(self.orientation!=1)]
+        return [[r,c] for r,c in np.argwhere(self.orientation!=0)]
 
     def get_n_orientations(self):
         return self.n_orientations
@@ -36,6 +36,9 @@ class Piece:
 
     def get_orientation(self):
         return self.orientation
+    
+    def get_orientations(self):
+        return self.orientations
     
     def get_orientation_index(self):
         return self.orientation_index
@@ -602,17 +605,16 @@ class Octogram:
         self.pieces.append(piece)
 
     def solve_octogram(self):
-        pieces = set(range(len(self.pieces)))
-        if self.solve(r=0, c=0, pieces=pieces):
+        if self.solve(r=0, c=0):
             print("great success!")
             self.show_solution()
         else:
             print('No solution found...')
 
-    def solve(self, r, c, pieces):
-        print(r,c)
-        print(self.board)
-        print("")
+    def solve(self, r, c):
+        print(r,c) #debug
+        print(self.board) #debug
+        print("") #debug
         # base case
         if r == self.n_rows:
             r = 0
@@ -622,31 +624,29 @@ class Octogram:
 
         # recursive case
         if self.board[r, c] != 0:
-            return self.solve(r + 1, c, pieces)
+            return self.solve(r + 1, c)
 
         # consider all available pieces to place on board
-        for _ in range(len(pieces)):
-            i = pieces.pop()
-            p = self.pieces[i]
-
+        for p in self.pieces:
             # Now consider all possible orientations for that piece
-            for j in range(p.get_n_orientations()):
-                if self.is_valid(r, c, p):
-                    self.place_piece(r, c, p)
+            for orientation in p.get_orientations():
+                if self.is_valid(r, c, p, orientation):
+                    self.place_piece(r, c, p, orientation)
 
-                    if self.solve(r + 1, c, pieces):
+                    if self.solve(r + 1, c):
                         return True
                     
                     # backtrack
-                    self.remove_piece(r, c, p)
-                    pieces.add(i)
-                    p.reorient()
+                    self.remove_piece(p)
 
         return False
 
-    def is_valid(self, r, c, piece):
-        ixs = piece.get_coords()
-        board_coords = [[r + p_r, c + p_c] for p_r, p_c in ixs]
+    def is_valid(self, r, c, piece, orientation):
+        if piece.get_number() in self.board:
+            return False
+
+        piece_coords = [[x,y] for x,y in np.argwhere(orientation!=0)]
+        board_coords = [[r + p_r, c + p_c] for p_r, p_c in piece_coords]
 
         # Check all rows are in-bounds
         rows = [x[0] for x in board_coords]
@@ -661,7 +661,7 @@ class Octogram:
         # Check that there is an empty space in each co-ordinate this piece will occupy.
         return np.sum([self.board[b_r, b_c] for b_r, b_c in board_coords]) == 0
 
-    def place_piece(self, r, c, piece):        
+    def place_piece(self, r, c, piece, orientation):        
         # Indexes that the piece "occupies the space of"
         ixs = piece.get_coords()
 
@@ -672,24 +672,11 @@ class Octogram:
             x, y = coord
             self.board[x, y] = piece.get_number()
 
-    def remove_piece(self, r, c, piece):
-        # Indexes that the piece "occupies the space of"
-        ixs = piece.get_coords()
-
-        # Coordinates of the board to make zero
-        board_coords = [[r + p_r, c + p_c] for p_r, p_c in ixs]
-
-        for coord in board_coords:
-            x, y = coord
-            if x >= BOARD_SIZE:
-                print(x, y)
-            if y >= BOARD_SIZE:
-                print(x,y)
-            self.board[x, y] = 0
+    def remove_piece(self, piece):
+        self.board[np.where(self.board==piece.get_number)] = 0
 
     def show_solution(self):
         print(self.board)
-
 
 if __name__ == '__main__':
     octogram = Octogram(pieces=[])
