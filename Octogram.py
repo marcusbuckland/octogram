@@ -1,7 +1,11 @@
 import numpy as np
 
-BOARD_SIZE = 8 # 8x8
-# BOARD_SIZE = 4 # 4x4
+BOARD_SIZE = 8 # 8x8 - Normal
+BOARD_SIZE = 4 # 4x4 - Generate Simple
+
+# Generate small
+# n_rows = 5
+# n_cols = 4
 
 class Piece:
     def __init__(self, orientations):
@@ -53,7 +57,7 @@ class Octogram:
     def __init__(self):
         self.n_rows = 5
         self.n_cols = 4
-        self.board = np.matrix([[0 for i in range(self.n_rows)] for j in range(self.n_cols)]) # 8x8
+        self.board = np.matrix([[0 for i in range(self.n_cols)] for j in range(self.n_rows)]) # 8x8
         self.available_pieces = []
 
     def generate_pieces(self):
@@ -447,7 +451,7 @@ class Octogram:
         piece = Piece(orientations=orientations)
         self.available_pieces.append(piece)
 
-    def generate_pieces_4x4(self):
+    def generate_simple(self):
         # Piece 1
         orientations = [
             np.matrix([
@@ -597,7 +601,6 @@ class Octogram:
 
     def solve_octogram(self):
         pieces = set(range(len(self.available_pieces)))
-        print(pieces)
         if self.solve(r=0, c=0, pieces=pieces):
             print("great success!")
             self.show_solution()
@@ -605,10 +608,14 @@ class Octogram:
             print('No solution found...')
 
     def solve(self, r, c, pieces):
+        print(self.board)
+
+        if r > self.n_rows:
+            print("How though!?")
         # base case
         if r == self.n_rows:
-            c += 1
             r = 0
+            c += 1
             if c == self.n_cols:
                 return True
 
@@ -623,35 +630,35 @@ class Octogram:
 
             # Now consider all possible orientations for that piece
             for j in range(p.get_n_orientations()):
-                p.reorient()
                 if self.is_valid(r, c, p):
                     self.place_piece(r, c, p)
 
                     if self.solve(r + 1, c, pieces):
                         return True
+                    
+                    p.reorient()
 
-                    # backtrack
-                    self.remove_piece(r, c, p)
-                    pieces.add(i)
+                # backtrack
+                self.remove_piece(r, c, p)
+                pieces.add(i)
 
         return False
 
     def is_valid(self, r, c, piece):
-        # Check row isn't out of bounds
-        if r + piece.row() > BOARD_SIZE:
-            return False
-
-        # Check column isn't out bounds
-        if c + piece.column() > BOARD_SIZE:
-            return False
-
-        # Now check that there is space on the board for the piece to fit into.
         ixs = piece.get_coords()
-
-        # Check also that [r, c] will be used when placing this piece
-        if [0, 0] not in ixs : return False
-        
         board_coords = [[r + p_r, c + p_c] for p_r, p_c in ixs]
+
+        # Check all rows are in-bounds
+        rows = [x[0] for x in board_coords]
+        if np.max(rows) >= self.n_rows:
+            return False
+
+        # Check all columns are in-bounds
+        cols = [x[1] for x in board_coords]
+        if np.max(cols) >= self.n_cols:
+            return False
+
+        # Check that there is an empty space in each co-ordinate this piece will occupy.
         return np.sum([self.board[b_r, b_c] for b_r, b_c in board_coords]) == 0
 
     def place_piece(self, r, c, piece):        
@@ -684,8 +691,7 @@ class Octogram:
         print(self.board)
 
 
-if __name__ == '__main__':
-    octogram = Octogram()
-    octogram.generate_small()
-    octogram.solve_octogram()
-    
+# if __name__ == '__main__':
+#     octogram = Octogram()
+#     octogram.generate_small()
+#     octogram.solve_octogram()
