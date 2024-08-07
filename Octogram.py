@@ -1,6 +1,7 @@
 import numpy as np
 
-BOARD_SIZE = 8 # 8x8
+# BOARD_SIZE = 8 # 8x8
+BOARD_SIZE = 4 # 4x4
 
 class Piece:
     def __init__(self, orientations):
@@ -15,6 +16,7 @@ class Piece:
         return str(self.orientation)
 
     def reorient(self):
+        # "Moves the piece into a different orientation by rotating etc."
         self.orientation_index = (1 + self.orientation_index) % self.n_orientations
         self.orientation = self.orientations[self.orientation_index]
         self.shape = self.orientation.shape
@@ -446,15 +448,31 @@ class Octogram:
         piece = Piece(orientations=orientations)
         self.available_pieces.append(piece)
 
+    def generate_pieces_small(self):
+        # Piece 1
+        orientations = [
+            np.matrix([
+                [1, 1],
+                [1, 1]
+            ])
+        ]
+        piece = Piece(orientations=orientations)
+        self.available_pieces.append(piece)
+        self.available_pieces.append(piece)
+        self.available_pieces.append(piece)
+        self.available_pieces.append(piece)
+
     def solve_octogram(self):
         pieces = set(range(len(self.available_pieces)))
-        print(pieces)
         if self.solve(r=0, c=0, pieces=pieces):
+            print("great success!")
             self.show_solution()
         else:
             print('No solution found...')
 
     def solve(self, r, c, pieces):
+        print(self.board)
+        print("")
         # base case
         if r == self.n_rows:
             c += 1
@@ -531,6 +549,6 @@ class Octogram:
 
 if __name__ == '__main__':
     octogram = Octogram()
-    octogram.generate_pieces()
+    octogram.generate_pieces_small()
     octogram.solve_octogram()
     
