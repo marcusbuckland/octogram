@@ -3,10 +3,6 @@ import numpy as np
 BOARD_SIZE = 8 # 8x8 - Normal
 BOARD_SIZE = 4 # 4x4 - Generate Simple
 
-# Generate small
-# n_rows = 5
-# n_cols = 4
-
 class Piece:
     def __init__(self, orientations):
         self.orientations = orientations
@@ -30,10 +26,13 @@ class Piece:
 
     def get_coords(self):
         # Coordinates for where the piece is occupying space
-        return [[r,c] for r,c in np.argwhere(self.orientation==1)]
+        return [[r,c] for r,c in np.argwhere(self.orientation!=1)]
 
     def get_n_orientations(self):
         return self.n_orientations
+    
+    def get_number(self):
+        return np.max(self.orientation)
 
     def get_orientation(self):
         return self.orientation
@@ -74,9 +73,9 @@ class Octogram:
         # Piece 2
         orientations = [
             np.matrix([
-                [0, 1, 0],
-                [1, 1, 1],
-                [0, 1, 0]
+                [0, 2, 0],
+                [2, 2, 2],
+                [0, 2, 0]
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -85,13 +84,13 @@ class Octogram:
         # Piece 3
         orientations = [
             np.matrix([
-                [1],
-                [1],
-                [1],
-                [1]
+                [3],
+                [3],
+                [3],
+                [3]
             ]),
             np.matrix([
-                [1, 1, 1, 1],
+                [3, 3, 3, 3],
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -100,22 +99,22 @@ class Octogram:
         # Piece 4
         orientations = [
             np.matrix([
-                [1, 1],
-                [1, 0],
-                [1, 1]
+                [4, 4],
+                [4, 0],
+                [4, 4]
             ]),
             np.matrix([
-                [1, 1, 1],
-                [1, 0, 1]
+                [4, 4, 4],
+                [4, 0, 4]
             ]),
             np.matrix([
-                [1, 1],
-                [0, 1],
-                [1, 1]
+                [4, 4],
+                [0, 4],
+                [4, 4]
             ]),
             np.matrix([
-                [1, 0, 1],
-                [1, 1, 1]
+                [4, 0, 4],
+                [4, 4, 4]
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -124,24 +123,24 @@ class Octogram:
         # Piece 5
         orientations = [
             np.matrix([
-                [1, 1, 1],
-                [0, 1, 0],
-                [0, 1, 0]
+                [5, 5, 5],
+                [0, 5, 0],
+                [0, 5, 0]
             ]),
             np.matrix([
-                [0, 0, 1],
-                [1, 1, 1],
-                [0, 0, 1]
+                [0, 0, 5],
+                [5, 5, 5],
+                [0, 0, 5]
             ]),
             np.matrix([
-                [0, 1, 0],
-                [0, 1, 0],
-                [1, 1, 1]
+                [0, 5, 0],
+                [0, 5, 0],
+                [5, 5, 5]
             ]),
             np.matrix([
-                [1, 0, 0],
-                [1, 1, 1],
-                [1, 0, 0]
+                [5, 0, 0],
+                [5, 5, 5],
+                [5, 0, 0]
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -150,24 +149,24 @@ class Octogram:
         # Piece 6
         orientations = [
             np.matrix([
-                [1, 1, 1],
-                [1, 0 ,0],
-                [1, 0, 0],
+                [6, 6, 6],
+                [6, 0 ,0],
+                [6, 0, 0],
             ]),
             np.matrix([
-                [1, 1, 1],
-                [0, 0 ,1],
-                [0, 0, 1],
+                [6, 6, 6],
+                [0, 0 ,6],
+                [0, 0, 6],
             ]),
             np.matrix([
-                [0, 0, 1],
-                [0, 0 ,1],
-                [1, 1, 1],
+                [0, 0, 6],
+                [0, 0 ,6],
+                [6, 6, 6],
             ]),
             np.matrix([
-                [1, 0, 0],
-                [1, 0 ,0],
-                [1, 1, 1],
+                [6, 0, 0],
+                [6, 0 ,0],
+                [6, 6, 6],
             ]),
         ]
         piece = Piece(orientations=orientations)
@@ -176,24 +175,24 @@ class Octogram:
         # Piece 7
         orientations = [
             np.matrix([
-                [1, 1, 0],
-                [0, 1 ,1],
-                [0, 0, 1],
+                [7, 7, 0],
+                [0, 7 ,7],
+                [0, 0, 7],
             ]),
             np.matrix([
-                [0, 0, 1],
-                [0, 1 ,1],
-                [1, 1, 0],
+                [0, 0, 7],
+                [0, 7 ,7],
+                [7, 7, 0],
             ]),
             np.matrix([
-                [1, 0, 0],
-                [1, 1 ,0],
-                [0, 1, 1],
+                [7, 0, 0],
+                [7, 7 ,0],
+                [0, 7, 7],
             ]),
             np.matrix([
-                [0, 1, 1],
-                [1, 1 ,0],
-                [1, 0, 0],
+                [0, 7, 7],
+                [7, 7 ,0],
+                [7, 0, 0],
             ]),
         ]
         piece = Piece(orientations=orientations)
@@ -202,24 +201,24 @@ class Octogram:
         # Piece 8
         orientations = [
             np.matrix([
-                [1, 0, 0],
-                [1, 1, 1],
-                [0, 0, 1],
+                [8, 0, 0],
+                [8, 8, 8],
+                [0, 0, 8],
             ]),
             np.matrix([
-                [0, 0, 1],
-                [1, 1, 1],
-                [1, 0, 0],
+                [0, 0, 8],
+                [8, 8, 8],
+                [8, 0, 0],
             ]),
             np.matrix([
-                [0, 1, 1],
-                [0, 1, 0],
-                [1, 1, 0],
+                [0, 8, 8],
+                [0, 8, 0],
+                [8, 8, 0],
             ]),
             np.matrix([
-                [1, 1, 0],
-                [0, 1, 0],
-                [0, 1, 1],
+                [8, 8, 0],
+                [0, 8, 0],
+                [0, 8, 8],
             ]),
         ]
         piece = Piece(orientations=orientations)
@@ -228,40 +227,40 @@ class Octogram:
         # Piece 9
         orientations = [
             np.matrix([
-                [1, 0],
-                [1, 1],
-                [1, 1]
+                [9, 0],
+                [9, 9],
+                [9, 9]
             ]),
             np.matrix([
-                [0, 1],
-                [1, 1],
-                [1, 1]
+                [0, 9],
+                [9, 9],
+                [9, 9]
             ]),
             np.matrix([
-                [1, 1],
-                [1, 1],
-                [0, 1]
+                [9, 9],
+                [9, 9],
+                [0, 9]
             ]),
             np.matrix([
-                [1, 1],
-                [1, 1],
-                [1, 0]
+                [9, 9],
+                [9, 9],
+                [9, 0]
             ]),
                 np.matrix([
-                [1, 1, 1],
-                [1, 1, 0],
+                [9, 9, 9],
+                [9, 9, 0],
             ]),
             np.matrix([
-                [1, 1, 1],
-                [0, 1, 1],
+                [9, 9, 9],
+                [0, 9, 9],
             ]),
             np.matrix([
-                [0, 1, 1],
-                [1, 1, 1],
+                [0, 9, 9],
+                [9, 9, 9],
             ]),
             np.matrix([
-                [1, 1, 0],
-                [1, 1, 1],
+                [9, 9, 0],
+                [9, 9, 9],
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -270,44 +269,44 @@ class Octogram:
         # Piece 10
         orientations = [
             np.matrix([
-                [1, 0],
-                [1, 0],
-                [1, 1],
-                [1, 0]
+                [10, 0],
+                [10, 0],
+                [10, 10],
+                [10, 0]
             ]),
             np.matrix([
-                [0, 1],
-                [0, 1],
-                [1, 1],
-                [0, 1]
+                [0, 10],
+                [0, 10],
+                [10, 10],
+                [0, 10]
             ]),
             np.matrix([
-                [1, 0],
-                [1, 1],
-                [1, 0],
-                [1, 0]
+                [10, 0],
+                [10, 10],
+                [10, 0],
+                [10, 0]
             ]),
             np.matrix([
-                [0, 1],
-                [1, 1],
-                [0, 1],
-                [0, 1]
+                [0, 10],
+                [10, 10],
+                [0, 10],
+                [0, 10]
             ]),
             np.matrix([
-                [1, 1, 1, 1],
-                [0, 1, 0, 0],
+                [10, 10, 10, 10],
+                [0, 10, 0, 0],
             ]),
             np.matrix([
-                [1, 1, 1, 1],
-                [0, 0, 1, 0],
+                [10, 10, 10, 10],
+                [0, 0, 10, 0],
             ]),
             np.matrix([
-                [0, 1, 0, 0],
-                [1, 1, 1, 1],
+                [0, 10, 0, 0],
+                [10, 10, 10, 10],
             ]),
             np.matrix([
-                [0, 0, 1, 0],
-                [1, 1, 1, 1],
+                [0, 0, 10, 0],
+                [10, 10, 10, 10],
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -316,44 +315,44 @@ class Octogram:
         # Piece 11
         orientations = [
             np.matrix([
-                [0, 1, 0],
-                [0, 1, 1],
-                [1, 1, 0],
+                [0, 11, 0],
+                [0, 11, 11],
+                [11, 11, 0],
             ]),
             np.matrix([
-                [0, 1, 0],
-                [1, 1, 0],
-                [0, 1, 1],
+                [0, 11, 0],
+                [11, 11, 0],
+                [0, 11, 11],
             ]),
             np.matrix([
-                [1, 0, 0],
-                [1, 1, 1],
-                [0, 1, 0],
+                [11, 0, 0],
+                [11, 11, 11],
+                [0, 11, 0],
             ]),
             np.matrix([
-                [0, 0, 1],
-                [1, 1, 1],
-                [0, 1, 0],
+                [0, 0, 11],
+                [11, 11, 11],
+                [0, 11, 0],
             ]),
             np.matrix([
-                [0, 1, 1],
-                [1, 1, 0],
-                [0, 1, 0],
+                [0, 11, 11],
+                [11, 11, 0],
+                [0, 11, 0],
             ]),
             np.matrix([
-                [1, 1, 0],
-                [0, 1, 1],
-                [0, 1, 0],
+                [11, 11, 0],
+                [0, 11, 11],
+                [0, 11, 0],
             ]),
             np.matrix([
-                [0, 1, 0],
-                [1, 1, 1],
-                [0, 0, 1],
+                [0, 11, 0],
+                [11, 11, 11],
+                [0, 0, 11],
             ]),
             np.matrix([
-                [0, 1, 0],
-                [1, 1, 1],
-                [1, 0, 0],
+                [0, 11, 0],
+                [11, 11, 11],
+                [11, 0, 0],
             ]),
         ]
         piece = Piece(orientations=orientations)
@@ -362,44 +361,44 @@ class Octogram:
         # Piece 12
         orientations = [
             np.matrix([
-                [1, 0],
-                [1, 0],
-                [1, 0],
-                [1, 1]
+                [12, 0],
+                [12, 0],
+                [12, 0],
+                [12, 12]
             ]),
             np.matrix([
-                [0, 1],
-                [0, 1],
-                [0, 1],
-                [1, 1]
+                [0, 12],
+                [0, 12],
+                [0, 12],
+                [12, 12]
             ]),
             np.matrix([
-                [1, 1],
-                [1, 0],
-                [1, 0],
-                [1, 0]
+                [12, 12],
+                [12, 0],
+                [12, 0],
+                [12, 0]
             ]),
             np.matrix([
-                [1, 1],
-                [0, 1],
-                [0, 1],
-                [0, 1]
+                [12, 12],
+                [0, 12],
+                [0, 12],
+                [0, 12]
             ]),
             np.matrix([
-                [1, 1, 1, 1],
-                [1, 0, 0, 0],
+                [12, 12, 12, 12],
+                [12, 0, 0, 0],
             ]),
             np.matrix([
-                [1, 1, 1, 1],
-                [0, 0, 0, 1],
+                [12, 12, 12, 12],
+                [0, 0, 0, 12],
             ]),
             np.matrix([
-                [1, 0, 0, 0],
-                [1, 1, 1, 1],
+                [12, 0, 0, 0],
+                [12, 12, 12, 12],
             ]),
             np.matrix([
-                [0, 0, 0, 1],
-                [1, 1, 1, 1],
+                [0, 0, 0, 12],
+                [12, 12, 12, 12],
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -408,50 +407,52 @@ class Octogram:
         # Piece 13
         orientations = [
             np.matrix([
-                [0, 1],
-                [0, 1],
-                [1, 1],
-                [1, 0]
+                [0, 13],
+                [0, 13],
+                [13, 13],
+                [13, 0]
             ]),
             np.matrix([
-                [1, 0],
-                [1, 0],
-                [1, 1],
-                [0, 1]
+                [13, 0],
+                [13, 0],
+                [13, 13],
+                [0, 13]
             ]),
             np.matrix([
-                [0, 1],
-                [1, 1],
-                [1, 0],
-                [1, 0]
+                [0, 13],
+                [13, 13],
+                [13, 0],
+                [13, 0]
             ]),
             np.matrix([
-                [1, 0],
-                [1, 1],
-                [0, 1],
-                [0, 1]
+                [13, 0],
+                [13, 13],
+                [0, 13],
+                [0, 13]
             ]),
             np.matrix([
-                [1, 1, 0, 0],
-                [0, 1, 1, 1],
+                [13, 13, 0, 0],
+                [0, 13, 13, 13],
             ]),
             np.matrix([
-                [0, 0, 1, 1],
-                [1, 1, 1, 0],
+                [0, 0, 13, 13],
+                [13, 13, 13, 0],
             ]),
             np.matrix([
-                [1, 1, 1, 0],
-                [0, 0, 1, 1],
+                [13, 13, 13, 0],
+                [0, 0, 13, 13],
             ]),
             np.matrix([
-                [0, 1, 1, 1],
-                [1, 1, 0, 0],
+                [0, 13, 13, 13],
+                [13, 13, 0, 0],
             ])
         ]
         piece = Piece(orientations=orientations)
         self.pieces.append(piece)
 
     def generate_simple(self):
+        # 4x4
+
         # Piece 1
         orientations = [
             np.matrix([
@@ -466,27 +467,43 @@ class Octogram:
         self.pieces.append(piece)
 
     def generate_small(self):
+        # 5x4 - pieces 3, 5, 10, & 12
+        # Piece 3
+        orientations = [
+            np.matrix([
+                [3],
+                [3],
+                [3],
+                [3]
+            ]),
+            np.matrix([
+                [3, 3, 3, 3],
+            ])
+        ]
+        piece = Piece(orientations=orientations)
+        self.pieces.append(piece)
+
         # Piece 5
         orientations = [
             np.matrix([
-                [1, 1, 1],
-                [0, 1, 0],
-                [0, 1, 0]
+                [5, 5, 5],
+                [0, 5, 0],
+                [0, 5, 0]
             ]),
             np.matrix([
-                [0, 0, 1],
-                [1, 1, 1],
-                [0, 0, 1]
+                [0, 0, 5],
+                [5, 5, 5],
+                [0, 0, 5]
             ]),
             np.matrix([
-                [0, 1, 0],
-                [0, 1, 0],
-                [1, 1, 1]
+                [0, 5, 0],
+                [0, 5, 0],
+                [5, 5, 5]
             ]),
             np.matrix([
-                [1, 0, 0],
-                [1, 1, 1],
-                [1, 0, 0]
+                [5, 0, 0],
+                [5, 5, 5],
+                [5, 0, 0]
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -495,59 +512,44 @@ class Octogram:
         # Piece 10
         orientations = [
             np.matrix([
-                [1, 0],
-                [1, 0],
-                [1, 1],
-                [1, 0]
+                [10, 0],
+                [10, 0],
+                [10, 10],
+                [10, 0]
             ]),
             np.matrix([
-                [0, 1],
-                [0, 1],
-                [1, 1],
-                [0, 1]
+                [0, 10],
+                [0, 10],
+                [10, 10],
+                [0, 10]
             ]),
             np.matrix([
-                [1, 0],
-                [1, 1],
-                [1, 0],
-                [1, 0]
+                [10, 0],
+                [10, 10],
+                [10, 0],
+                [10, 0]
             ]),
             np.matrix([
-                [0, 1],
-                [1, 1],
-                [0, 1],
-                [0, 1]
+                [0, 10],
+                [10, 10],
+                [0, 10],
+                [0, 10]
             ]),
             np.matrix([
-                [1, 1, 1, 1],
-                [0, 1, 0, 0],
+                [10, 10, 10, 10],
+                [0, 10, 0, 0],
             ]),
             np.matrix([
-                [1, 1, 1, 1],
-                [0, 0, 1, 0],
+                [10, 10, 10, 10],
+                [0, 0, 10, 0],
             ]),
             np.matrix([
-                [0, 1, 0, 0],
-                [1, 1, 1, 1],
+                [0, 10, 0, 0],
+                [10, 10, 10, 10],
             ]),
             np.matrix([
-                [0, 0, 1, 0],
-                [1, 1, 1, 1],
-            ])
-        ]
-        piece = Piece(orientations=orientations)
-        self.pieces.append(piece)
-
-        # Piece 3
-        orientations = [
-            np.matrix([
-                [1],
-                [1],
-                [1],
-                [1]
-            ]),
-            np.matrix([
-                [1, 1, 1, 1],
+                [0, 0, 10, 0],
+                [10, 10, 10, 10],
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -556,44 +558,44 @@ class Octogram:
         # Piece 12
         orientations = [
             np.matrix([
-                [1, 0],
-                [1, 0],
-                [1, 0],
-                [1, 1]
+                [12, 0],
+                [12, 0],
+                [12, 0],
+                [12, 12]
             ]),
             np.matrix([
-                [0, 1],
-                [0, 1],
-                [0, 1],
-                [1, 1]
+                [0, 12],
+                [0, 12],
+                [0, 12],
+                [12, 12]
             ]),
             np.matrix([
-                [1, 1],
-                [1, 0],
-                [1, 0],
-                [1, 0]
+                [12, 12],
+                [12, 0],
+                [12, 0],
+                [12, 0]
             ]),
             np.matrix([
-                [1, 1],
-                [0, 1],
-                [0, 1],
-                [0, 1]
+                [12, 12],
+                [0, 12],
+                [0, 12],
+                [0, 12]
             ]),
             np.matrix([
-                [1, 1, 1, 1],
-                [1, 0, 0, 0],
+                [12, 12, 12, 12],
+                [12, 0, 0, 0],
             ]),
             np.matrix([
-                [1, 1, 1, 1],
-                [0, 0, 0, 1],
+                [12, 12, 12, 12],
+                [0, 0, 0, 12],
             ]),
             np.matrix([
-                [1, 0, 0, 0],
-                [1, 1, 1, 1],
+                [12, 0, 0, 0],
+                [12, 12, 12, 12],
             ]),
             np.matrix([
-                [0, 0, 0, 1],
-                [1, 1, 1, 1],
+                [0, 0, 0, 12],
+                [12, 12, 12, 12],
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -625,7 +627,7 @@ class Octogram:
         # consider all available pieces to place on board
         for _ in range(len(pieces)):
             i = pieces.pop()
-            p = self.available_pieces[i]
+            p = self.pieces[i]
 
             # Now consider all possible orientations for that piece
             for j in range(p.get_n_orientations()):
@@ -668,7 +670,7 @@ class Octogram:
 
         for coord in board_coords:
             x, y = coord
-            self.board[x, y] = 1
+            self.board[x, y] = piece.get_number()
 
     def remove_piece(self, r, c, piece):
         # Indexes that the piece "occupies the space of"
@@ -690,6 +692,6 @@ class Octogram:
 
 
 if __name__ == '__main__':
-    octogram = Octogram()
+    octogram = Octogram(pieces=[])
     octogram.generate_small()
     octogram.solve_octogram()
