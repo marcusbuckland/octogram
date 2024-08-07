@@ -642,30 +642,38 @@ class Octogram:
         return False
 
     def is_valid(self, r, c, piece, orientation):
+        # If the piece has already been placed, it isn't valid.
         if piece.get_number() in self.board:
             return False
 
-        piece_coords = [[x,y] for x,y in np.argwhere(orientation!=0)]
+        piece_coords = [[x, y] for x, y in np.argwhere(orientation != 0)]
         board_coords = [[r + p_r, c + p_c] for p_r, p_c in piece_coords]
 
         # Check all rows are in-bounds
-        rows = [x[0] for x in board_coords]
-        if np.max(rows) >= self.n_rows:
-            return False
+        for x in board_coords:
+            if x[0] >= self.n_rows or x[0] < 0:
+                print(f"Row {x[0]} out of bounds for piece {piece.get_number()} at position ({r}, {c})")
+                return False
 
         # Check all columns are in-bounds
-        cols = [x[1] for x in board_coords]
-        if np.max(cols) >= self.n_cols:
-            return False
+        for x in board_coords:
+            if x[1] >= self.n_cols or x[1] < 0:
+                print(f"Column {x[1]} out of bounds for piece {piece.get_number()} at position ({r}, {c})")
+                return False
 
-        # Check that there is an empty space in each co-ordinate this piece will occupy.
-        return np.sum([self.board[b_r, b_c] for b_r, b_c in board_coords]) == 0
+        # Check that there is an empty space in each coordinate this piece will occupy
+        for b_r, b_c in board_coords:
+            if self.board[b_r, b_c] != 0:
+                print(f"Space at ({b_r}, {b_c}) already occupied for piece {piece.get_number()} at position ({r}, {c})")
+                return False
 
-    def place_piece(self, r, c, piece, orientation):        
+        return True
+
+    def place_piece(self, r, c, piece, orientation):    
         # Indexes that the piece "occupies the space of"
-        ixs = piece.get_coords()
+        ixs = [[r,c] for r,c in np.argwhere(orientation!=0)]
 
-        # Coordinates of the board to update to 1
+        # Coordinates of the board to update
         board_coords = [[r + p_r, c + p_c] for p_r, p_c in ixs]
 
         for coord in board_coords:
@@ -673,7 +681,7 @@ class Octogram:
             self.board[x, y] = piece.get_number()
 
     def remove_piece(self, piece):
-        self.board[np.where(self.board==piece.get_number)] = 0
+        self.board[np.where(self.board==piece.get_number())] = 0
 
     def show_solution(self):
         print(self.board)
