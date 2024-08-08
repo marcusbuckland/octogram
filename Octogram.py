@@ -25,8 +25,7 @@ class Piece:
         print(self.orientations[self.orientation_index])
 
     def get_coords(self):
-        # Coordinates for where the piece is occupying space
-        return [[r,c] for r,c in np.argwhere(self.orientation!=0)]
+        return [[r, c] for r, c in np.argwhere(self.orientation != 0)]
 
     def get_n_orientations(self):
         return self.n_orientations
@@ -49,6 +48,9 @@ class Piece:
     def get_size(self):
         return self.size
     
+    def get_row_offset(self):
+        return -np.min(np.where(self.get_orientation()[:,0] == self.get_number())[0]) # lol
+
     def row(self):
         return self.shape[0]
     
@@ -617,11 +619,7 @@ class Octogram:
         else:
             print('No solution found...')
 
-    def solve(self, r, c):
-        # print(r,c) #debug
-        # print(self.board) #debug
-        # print("") #debug
-        
+    def solve(self, r, c):        
         # base case
         if r == self.n_rows:
             r = 0
@@ -637,9 +635,8 @@ class Octogram:
         for p in self.pieces:
             # Now consider all possible orientations for that piece
             for orientation in p.get_orientations():
-                print(f"Considering {orientation} at board position {r, c}")
-                print(f"Board currently: {self.board}")
-
+                # print(f"Considering {orientation} at board position {r, c}")
+                # print(f"Board currently: {self.board}")
                 if self.is_valid(r, c, p, orientation):
                     self.place_piece(r, c, p, orientation)
 
@@ -655,22 +652,19 @@ class Octogram:
         # If the piece has already been placed, it isn't valid.
         if piece.get_number() in self.board:
             return False
-
-        piece_coords = [[x, y] for x, y in np.argwhere(orientation != 0)]
-        board_coords = [[r + p_r, c + p_c] for p_r, p_c in piece_coords]
-
-        if [0, 0] not in piece_coords : return False
+        
+        piece_coords = piece.get_coords()
+        row_offset = piece.get_row_offset()
+        board_coords = [[r + p_r + row_offset, c + p_c] for p_r, p_c in piece_coords]
 
         # Check all rows are in-bounds
         for x in board_coords:
             if x[0] >= self.n_rows or x[0] < 0:
-                print(f"Row {x[0]} out of bounds for piece {piece.get_number()} at position ({r}, {c})")
                 return False
 
         # Check all columns are in-bounds
         for x in board_coords:
             if x[1] >= self.n_cols or x[1] < 0:
-                print(f"Column {x[1]} out of bounds for piece {piece.get_number()} at position ({r}, {c})")
                 return False
 
         # Check that there is an empty space in each coordinate this piece will occupy
@@ -683,10 +677,9 @@ class Octogram:
 
     def place_piece(self, r, c, piece, orientation):    
         # Indexes that the piece "occupies the space of"
-        ixs = [[r,c] for r,c in np.argwhere(orientation!=0)]
-
-        # Coordinates of the board to update
-        board_coords = [[r + p_r, c + p_c] for p_r, p_c in ixs]
+        piece_coords = piece.get_coords()
+        row_offset = piece.get_row_offset()
+        board_coords = [[r + p_r + row_offset, c + p_c] for p_r, p_c in piece_coords]
 
         for coord in board_coords:
             x, y = coord
