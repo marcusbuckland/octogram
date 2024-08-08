@@ -63,6 +63,8 @@ class Octogram:
         self.pieces = pieces
 
     def generate_pieces(self):
+        self.pieces = []
+
         # Piece 1
         orientations = [
             np.matrix([
@@ -90,10 +92,11 @@ class Octogram:
                 [3],
                 [3],
                 [3],
+                [3],
                 [3]
             ]),
             np.matrix([
-                [3, 3, 3, 3],
+                [3, 3, 3, 3, 3],
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -455,6 +458,7 @@ class Octogram:
 
     def generate_simple(self):
         # 4x4
+        self.pieces = []
 
         # Piece 1
         orientations = [
@@ -471,16 +475,18 @@ class Octogram:
 
     def generate_small(self):
         # 5x4 - pieces 3, 5, 10, & 12
+        self.pieces = []
         # Piece 3
         orientations = [
             np.matrix([
                 [3],
                 [3],
                 [3],
+                [3],
                 [3]
             ]),
             np.matrix([
-                [3, 3, 3, 3],
+                [3, 3, 3, 3, 3],
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -606,21 +612,22 @@ class Octogram:
 
     def solve_octogram(self):
         if self.solve(r=0, c=0):
-            print("great success!")
+            print("Solution found!")
             self.show_solution()
         else:
             print('No solution found...')
 
     def solve(self, r, c):
-        print(r,c) #debug
-        print(self.board) #debug
-        print("") #debug
+        # print(r,c) #debug
+        # print(self.board) #debug
+        # print("") #debug
+        
         # base case
         if r == self.n_rows:
             r = 0
             c += 1
             if c == self.n_cols:
-                return True
+                return True # Solution found!
 
         # recursive case
         if self.board[r, c] != 0:
@@ -630,6 +637,9 @@ class Octogram:
         for p in self.pieces:
             # Now consider all possible orientations for that piece
             for orientation in p.get_orientations():
+                print(f"Considering {orientation} at board position {r, c}")
+                print(f"Board currently: {self.board}")
+
                 if self.is_valid(r, c, p, orientation):
                     self.place_piece(r, c, p, orientation)
 
@@ -648,6 +658,8 @@ class Octogram:
 
         piece_coords = [[x, y] for x, y in np.argwhere(orientation != 0)]
         board_coords = [[r + p_r, c + p_c] for p_r, p_c in piece_coords]
+
+        if [0, 0] not in piece_coords : return False
 
         # Check all rows are in-bounds
         for x in board_coords:
@@ -687,6 +699,7 @@ class Octogram:
         print(self.board)
 
 if __name__ == '__main__':
-    octogram = Octogram(pieces=[])
+    pieces = []
+    octogram = Octogram(pieces=pieces)
     octogram.generate_small()
     octogram.solve_octogram()
