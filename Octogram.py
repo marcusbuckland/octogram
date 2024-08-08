@@ -476,23 +476,8 @@ class Octogram:
         self.pieces.append(piece)
 
     def generate_small(self):
-        # 5x4 - pieces 3, 5, 10, & 12
+        # 5x4 - pieces 5, 12, 10, 3
         self.pieces = []
-        # Piece 3
-        orientations = [
-            np.matrix([
-                [3],
-                [3],
-                [3],
-                [3],
-                [3]
-            ]),
-            np.matrix([
-                [3, 3, 3, 3, 3],
-            ])
-        ]
-        piece = Piece(orientations=orientations)
-        self.pieces.append(piece)
 
         # Piece 5
         orientations = [
@@ -515,52 +500,6 @@ class Octogram:
                 [5, 0, 0],
                 [5, 5, 5],
                 [5, 0, 0]
-            ])
-        ]
-        piece = Piece(orientations=orientations)
-        self.pieces.append(piece)
-
-        # Piece 10
-        orientations = [
-            np.matrix([
-                [10, 0],
-                [10, 0],
-                [10, 10],
-                [10, 0]
-            ]),
-            np.matrix([
-                [0, 10],
-                [0, 10],
-                [10, 10],
-                [0, 10]
-            ]),
-            np.matrix([
-                [10, 0],
-                [10, 10],
-                [10, 0],
-                [10, 0]
-            ]),
-            np.matrix([
-                [0, 10],
-                [10, 10],
-                [0, 10],
-                [0, 10]
-            ]),
-            np.matrix([
-                [10, 10, 10, 10],
-                [0, 10, 0, 0],
-            ]),
-            np.matrix([
-                [10, 10, 10, 10],
-                [0, 0, 10, 0],
-            ]),
-            np.matrix([
-                [0, 10, 0, 0],
-                [10, 10, 10, 10],
-            ]),
-            np.matrix([
-                [0, 0, 10, 0],
-                [10, 10, 10, 10],
             ])
         ]
         piece = Piece(orientations=orientations)
@@ -612,6 +551,68 @@ class Octogram:
         piece = Piece(orientations=orientations)
         self.pieces.append(piece)
 
+        # Piece 10
+        orientations = [
+            np.matrix([
+                [10, 0],
+                [10, 0],
+                [10, 10],
+                [10, 0]
+            ]),
+            np.matrix([
+                [0, 10],
+                [0, 10],
+                [10, 10],
+                [0, 10]
+            ]),
+            np.matrix([
+                [10, 0],
+                [10, 10],
+                [10, 0],
+                [10, 0]
+            ]),
+            np.matrix([
+                [0, 10],
+                [10, 10],
+                [0, 10],
+                [0, 10]
+            ]),
+            np.matrix([
+                [10, 10, 10, 10],
+                [0, 10, 0, 0],
+            ]),
+            np.matrix([
+                [10, 10, 10, 10],
+                [0, 0, 10, 0],
+            ]),
+            np.matrix([
+                [0, 10, 0, 0],
+                [10, 10, 10, 10],
+            ]),
+            np.matrix([
+                [0, 0, 10, 0],
+                [10, 10, 10, 10],
+            ])
+        ]
+        piece = Piece(orientations=orientations)
+        self.pieces.append(piece)
+
+        # Piece 3
+        orientations = [
+            np.matrix([
+                [3],
+                [3],
+                [3],
+                [3],
+                [3]
+            ]),
+            np.matrix([
+                [3, 3, 3, 3, 3],
+            ])
+        ]
+        piece = Piece(orientations=orientations)
+        self.pieces.append(piece)
+
     def solve_octogram(self):
         if self.solve(r=0, c=0):
             print("Solution found!")
@@ -635,8 +636,11 @@ class Octogram:
         for p in self.pieces:
             # Now consider all possible orientations for that piece
             for orientation in p.get_orientations():
-                # print(f"Considering {orientation} at board position {r, c}")
-                # print(f"Board currently: {self.board}")
+                print(f"Considering:")
+                print(orientation)
+                print(f"at board position {r, c}")
+                print(f"Board currently:")
+                print(f"{self.board}")
                 if self.is_valid(r, c, p, orientation):
                     self.place_piece(r, c, p, orientation)
 
