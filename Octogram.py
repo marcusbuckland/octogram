@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 BOARD_SIZE = 8 # 8x8 - Normal
 # BOARD_SIZE = 4 # 4x4 - Generate Simple
@@ -703,4 +704,5 @@ if __name__ == '__main__':
     pieces = []
     octogram = Octogram(pieces=pieces)
     octogram.generate_pieces()
+    random.shuffle(octogram.pieces)
     octogram.solve_octogram()
