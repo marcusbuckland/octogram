@@ -1,7 +1,7 @@
 import numpy as np
 
 BOARD_SIZE = 8 # 8x8 - Normal
-BOARD_SIZE = 4 # 4x4 - Generate Simple
+# BOARD_SIZE = 4 # 4x4 - Generate Simple
 
 class Piece:
     def __init__(self, orientations):
@@ -59,8 +59,8 @@ class Piece:
 
 class Octogram:
     def __init__(self, pieces):
-        self.n_rows = 5
-        self.n_cols = 4
+        self.n_rows = BOARD_SIZE
+        self.n_cols = BOARD_SIZE
         self.board = np.matrix([[0 for i in range(self.n_cols)] for j in range(self.n_rows)]) # 8x8
         self.pieces = pieces
 
@@ -661,9 +661,9 @@ class Octogram:
         if piece.get_number() in self.board:
             return False
         
-        piece_coords = piece.get_coords()
-        row_offset = piece.get_row_offset()
-        board_coords = [[r + p_r + row_offset, c + p_c] for p_r, p_c in piece_coords]
+        piece_coords = [[r, c] for r, c in np.argwhere(orientation != 0)]
+        row_offset = np.min(np.where(orientation[:,0] == piece.get_number())[0]) # lol
+        board_coords = [[r + p_r - row_offset, c + p_c] for p_r, p_c in piece_coords]
 
         # Check all rows are in-bounds
         for x in board_coords:
@@ -678,16 +678,16 @@ class Octogram:
         # Check that there is an empty space in each coordinate this piece will occupy
         for b_r, b_c in board_coords:
             if self.board[b_r, b_c] != 0:
-                print(f"Space at ({b_r}, {b_c}) already occupied for piece {piece.get_number()} at position ({r}, {c})")
+                # print(f"Space at ({b_r}, {b_c}) already occupied for piece {piece.get_number()} at position ({r}, {c})")
                 return False
 
         return True
 
     def place_piece(self, r, c, piece, orientation):    
         # Indexes that the piece "occupies the space of"
-        piece_coords = piece.get_coords()
-        row_offset = piece.get_row_offset()
-        board_coords = [[r + p_r + row_offset, c + p_c] for p_r, p_c in piece_coords]
+        piece_coords = [[r, c] for r, c in np.argwhere(orientation != 0)]
+        row_offset = np.min(np.where(orientation[:,0] == piece.get_number())[0]) # lol
+        board_coords = [[r + p_r - row_offset, c + p_c] for p_r, p_c in piece_coords]
 
         for coord in board_coords:
             x, y = coord
@@ -702,5 +702,5 @@ class Octogram:
 if __name__ == '__main__':
     pieces = []
     octogram = Octogram(pieces=pieces)
-    octogram.generate_small()
+    octogram.generate_pieces()
     octogram.solve_octogram()
