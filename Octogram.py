@@ -633,14 +633,14 @@ class Octogram:
             return self.solve(r + 1, c)
 
         # consider all available pieces to place on board
-        for p in self.pieces:
+        for p in self.get_valid_pieces():
             # Now consider all possible orientations for that piece
             for orientation in p.get_orientations():
-                print(f"Considering:")
-                print(orientation)
-                print(f"at board position {r, c}")
-                print(f"Board currently:")
-                print(f"{self.board}")
+                # print(f"Considering:")
+                # print(orientation)
+                # print(f"at board position {r, c}")
+                # print(f"Board currently:")
+                # print(f"{self.board}")
                 if self.is_valid(r, c, p, orientation):
                     self.place_piece(r, c, p, orientation)
 
@@ -652,6 +652,10 @@ class Octogram:
 
         return False
 
+    def get_valid_pieces(self):
+        pieces_on_board = [x for x in np.unique(np.array(octogram.board)) if x != 0]
+        return [p for p in octogram.pieces if p.get_number() not in pieces_on_board]
+        
     def is_valid(self, r, c, piece, orientation):
         # If the piece has already been placed, it isn't valid.
         if piece.get_number() in self.board:
