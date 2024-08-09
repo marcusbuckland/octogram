@@ -4,6 +4,8 @@ import random
 BOARD_SIZE = 8 # 8x8 - Normal
 # BOARD_SIZE = 4 # 4x4 - Generate Simple
 
+# Interesting
+
 class Piece:
     def __init__(self, orientations):
         self.orientations = orientations
@@ -459,160 +461,24 @@ class Octogram:
         piece = Piece(orientations=orientations)
         self.pieces.append(piece)
 
-    def generate_simple(self):
-        # 4x4
-        self.pieces = []
+    def solve_cross(self):
+        self.n_rows = 9
+        self.n_cols = 9
+        self.board = np.matrix([[0 for i in range(self.n_cols)] for j in range(self.n_rows)]) # 9x9
+        
+        # Empty space piece
+        orientations = np.matrix([[-1 for i in range(3)] for j in range(3)]) # 3x3
+        piece = Piece(orientations=[orientations])
+        self.place_piece(r=0,c=0, piece=piece, orientation=piece.orientation)
+        self.place_piece(r=6,c=0, piece=piece, orientation=piece.orientation)
+        self.place_piece(r=0,c=6, piece=piece, orientation=piece.orientation)
+        self.place_piece(r=6,c=6, piece=piece, orientation=piece.orientation)
 
-        # Piece 1
-        orientations = [
-            np.matrix([
-                [1, 1],
-                [1, 1]
-            ])
-        ]
-        piece = Piece(orientations=orientations)
-        self.pieces.append(piece)
-        self.pieces.append(piece)
-        self.pieces.append(piece)
-        self.pieces.append(piece)
-
-    def generate_small(self):
-        # 5x4 - pieces 5, 12, 10, 3
-        self.pieces = []
-
-        # Piece 5
-        orientations = [
-            np.matrix([
-                [5, 5, 5],
-                [0, 5, 0],
-                [0, 5, 0]
-            ]),
-            np.matrix([
-                [0, 0, 5],
-                [5, 5, 5],
-                [0, 0, 5]
-            ]),
-            np.matrix([
-                [0, 5, 0],
-                [0, 5, 0],
-                [5, 5, 5]
-            ]),
-            np.matrix([
-                [5, 0, 0],
-                [5, 5, 5],
-                [5, 0, 0]
-            ])
-        ]
-        piece = Piece(orientations=orientations)
-        self.pieces.append(piece)
-
-        # Piece 12
-        orientations = [
-            np.matrix([
-                [12, 0],
-                [12, 0],
-                [12, 0],
-                [12, 12]
-            ]),
-            np.matrix([
-                [0, 12],
-                [0, 12],
-                [0, 12],
-                [12, 12]
-            ]),
-            np.matrix([
-                [12, 12],
-                [12, 0],
-                [12, 0],
-                [12, 0]
-            ]),
-            np.matrix([
-                [12, 12],
-                [0, 12],
-                [0, 12],
-                [0, 12]
-            ]),
-            np.matrix([
-                [12, 12, 12, 12],
-                [12, 0, 0, 0],
-            ]),
-            np.matrix([
-                [12, 12, 12, 12],
-                [0, 0, 0, 12],
-            ]),
-            np.matrix([
-                [12, 0, 0, 0],
-                [12, 12, 12, 12],
-            ]),
-            np.matrix([
-                [0, 0, 0, 12],
-                [12, 12, 12, 12],
-            ])
-        ]
-        piece = Piece(orientations=orientations)
-        self.pieces.append(piece)
-
-        # Piece 10
-        orientations = [
-            np.matrix([
-                [10, 0],
-                [10, 0],
-                [10, 10],
-                [10, 0]
-            ]),
-            np.matrix([
-                [0, 10],
-                [0, 10],
-                [10, 10],
-                [0, 10]
-            ]),
-            np.matrix([
-                [10, 0],
-                [10, 10],
-                [10, 0],
-                [10, 0]
-            ]),
-            np.matrix([
-                [0, 10],
-                [10, 10],
-                [0, 10],
-                [0, 10]
-            ]),
-            np.matrix([
-                [10, 10, 10, 10],
-                [0, 10, 0, 0],
-            ]),
-            np.matrix([
-                [10, 10, 10, 10],
-                [0, 0, 10, 0],
-            ]),
-            np.matrix([
-                [0, 10, 0, 0],
-                [10, 10, 10, 10],
-            ]),
-            np.matrix([
-                [0, 0, 10, 0],
-                [10, 10, 10, 10],
-            ])
-        ]
-        piece = Piece(orientations=orientations)
-        self.pieces.append(piece)
-
-        # Piece 3
-        orientations = [
-            np.matrix([
-                [3],
-                [3],
-                [3],
-                [3],
-                [3]
-            ]),
-            np.matrix([
-                [3, 3, 3, 3, 3],
-            ])
-        ]
-        piece = Piece(orientations=orientations)
-        self.pieces.append(piece)
+        if self.solve(r=0, c=0):
+            print("Solution found!")
+            self.show_solution()
+        else:
+            print('No solution found...')
 
     def solve_octogram(self):
         if self.solve(r=0, c=0):
@@ -704,5 +570,6 @@ if __name__ == '__main__':
     pieces = []
     octogram = Octogram(pieces=pieces)
     octogram.generate_pieces()
-    random.shuffle(octogram.pieces)
+    # random.shuffle(octogram.pieces)
     octogram.solve_octogram()
+    # octogram.solve_cross()
