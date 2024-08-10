@@ -487,6 +487,17 @@ class Octogram:
         else:
             print('No solution found...')
 
+    def solve_rectangle(self):
+        self.n_rows = 4
+        self.n_cols = 15
+        self.board = np.matrix([[0 for i in range(self.n_cols)] for j in range(self.n_rows)]) # 4x15
+
+        if self.solve(r=0, c=0):
+            print("Solution found!")
+            self.show_solution()
+        else:
+            print('No solution found...')
+
     def solve(self, r, c):        
         # base case
         if r == self.n_rows:
@@ -573,3 +584,4 @@ if __name__ == '__main__':
     # random.shuffle(octogram.pieces)
     octogram.solve_octogram()
     # octogram.solve_cross()
+    # octogram.solve_rectangle()
