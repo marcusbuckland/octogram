@@ -67,6 +67,9 @@ class Octogram:
         self.board = np.matrix([[0 for i in range(self.n_cols)] for j in range(self.n_rows)]) # 8x8
         self.pieces = pieces
 
+    def __repr__(self):
+        return str(self.board)
+
     def generate_pieces(self):
         self.pieces = []
 
@@ -504,6 +507,28 @@ class Octogram:
         else:
             print('No solution found...')
 
+    def solve_zig_zag(self):
+        self.n_rows = 9
+        self.n_cols = 9
+        self.board = np.matrix([[0 for i in range(self.n_cols)] for j in range(self.n_rows)]) # 9x9 with empty space
+        
+        # Empty space piece
+        orientations = np.matrix([[-1 for i in range(3)] for j in range(3)]) # 3x3
+        piece = Piece(orientations=[orientations])
+        self.place_piece(r=6,c=0, piece=piece, orientation=piece.orientation)
+        self.place_piece(r=0,c=3, piece=piece, orientation=piece.orientation)
+        self.place_piece(r=0,c=6, piece=piece, orientation=piece.orientation)
+        self.place_piece(r=3,c=6, piece=piece, orientation=piece.orientation)
+
+        pieces_required = [3, 4, 5, 6, 8, 9, 10, 11, 12]
+        self.pieces = [p for p in self.pieces if p.get_number() in pieces_required]
+
+        if self.solve(r=0, c=0):
+            print("Solution found!")
+            self.show_solution()
+        else:
+            print('No solution found...')
+
     def solve(self, r, c): 
         # base case
         if r == self.n_rows:
@@ -590,4 +615,5 @@ if __name__ == '__main__':
     # random.shuffle(octogram.pieces)
     # octogram.solve_octogram()
     # octogram.solve_cross()
-    octogram.solve_rectangle()
+    # octogram.solve_rectangle()
+    octogram.solve_zig_zag()
