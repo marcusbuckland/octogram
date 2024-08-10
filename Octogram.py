@@ -2,9 +2,6 @@ import numpy as np
 import random
 
 BOARD_SIZE = 8 # 8x8 - Normal
-# BOARD_SIZE = 4 # 4x4 - Generate Simple
-
-# Interesting
 
 class Piece:
     def __init__(self, orientations):
@@ -61,11 +58,11 @@ class Piece:
         return self.shape[1]
 
 class Octogram:
-    def __init__(self, pieces):
+    def __init__(self):
         self.n_rows = BOARD_SIZE
         self.n_cols = BOARD_SIZE
         self.board = np.matrix([[0 for i in range(self.n_cols)] for j in range(self.n_rows)]) # 8x8
-        self.pieces = pieces
+        self.pieces = []
 
     def __repr__(self):
         return str(self.board)
@@ -545,11 +542,6 @@ class Octogram:
         for p in self.get_valid_pieces():
             # Now consider all possible orientations for that piece
             for orientation in p.get_orientations():
-                # print(f"Considering:")
-                # print(orientation)
-                # print(f"at board position {r, c}")
-                # print(f"Board currently:")
-                # print(f"{self.board}")
                 if self.is_valid(r, c, p, orientation):
                     self.place_piece(r, c, p, orientation)
 
@@ -587,13 +579,12 @@ class Octogram:
         # Check that there is an empty space in each coordinate this piece will occupy
         for b_r, b_c in board_coords:
             if self.board[b_r, b_c] != 0:
-                # print(f"Space at ({b_r}, {b_c}) already occupied for piece {piece.get_number()} at position ({r}, {c})")
                 return False
 
         return True
 
     def place_piece(self, r, c, piece, orientation):    
-        # Indexes that the piece "occupies the space of"
+        # Indexes that the piece occupies the space of
         piece_coords = [[r, c] for r, c in np.argwhere(orientation != 0)]
         row_offset = np.min(np.where(orientation[:,0] == piece.get_number())[0]) # lol
         board_coords = [[r + p_r - row_offset, c + p_c] for p_r, p_c in piece_coords]
@@ -609,11 +600,11 @@ class Octogram:
         print(self.board)
 
 if __name__ == '__main__':
-    pieces = []
-    octogram = Octogram(pieces=pieces)
+    octogram = Octogram()
     octogram.generate_pieces()
-    # random.shuffle(octogram.pieces)
-    # octogram.solve_octogram()
+    random.shuffle(octogram.pieces)
+    octogram.solve_octogram()
     # octogram.solve_cross()
     # octogram.solve_rectangle()
-    octogram.solve_zig_zag()
+    # octogram.solve_zig_zag()
+    # print(octogram)
