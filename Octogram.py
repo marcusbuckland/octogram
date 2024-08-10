@@ -474,6 +474,9 @@ class Octogram:
         self.place_piece(r=0,c=6, piece=piece, orientation=piece.orientation)
         self.place_piece(r=6,c=6, piece=piece, orientation=piece.orientation)
 
+        pieces_required = [3, 4, 5, 6, 8, 9, 10, 11, 12]
+        self.pieces = [p for p in self.pieces if p.get_number() in pieces_required]
+
         if self.solve(r=0, c=0):
             print("Solution found!")
             self.show_solution()
@@ -498,7 +501,7 @@ class Octogram:
         else:
             print('No solution found...')
 
-    def solve(self, r, c):        
+    def solve(self, r, c): 
         # base case
         if r == self.n_rows:
             r = 0
@@ -582,6 +585,6 @@ if __name__ == '__main__':
     octogram = Octogram(pieces=pieces)
     octogram.generate_pieces()
     # random.shuffle(octogram.pieces)
-    octogram.solve_octogram()
-    # octogram.solve_cross()
+    # octogram.solve_octogram()
+    octogram.solve_cross()
     # octogram.solve_rectangle()
