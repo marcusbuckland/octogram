@@ -461,6 +461,17 @@ class Octogram:
         piece = Piece(orientations=orientations)
         self.pieces.append(piece)
 
+    def get_board_coords(self, r, c, piece, orientation):
+        piece_coords = self.get_piece_coords(orientation)
+        row_offset = self.get_row_offset(piece, orientation)
+        return [[r + p_r - row_offset, c + p_c] for p_r, p_c in piece_coords]
+
+    def get_piece_coords(self, orientation):
+        return [[r, c] for r, c in np.argwhere(orientation != 0)]
+
+    def get_row_offset(self, piece, orientation):
+        return np.min(np.where(orientation[:,0] == piece.get_number())[0]) # lol
+
     def solve_cross(self):
         self.n_rows = 9
         self.n_cols = 9
@@ -478,15 +489,16 @@ class Octogram:
         self.pieces = [p for p in self.pieces if p.get_number() in pieces_required]
 
         if self.solve(r=0, c=0):
-            print("Solution found!")
-            self.show_solution()
+            print("Solution for Cross:")
+            print(self.board)
         else:
             print('No solution found...')
 
     def solve_octogram(self):
         if self.solve(r=0, c=0):
-            print("Solution found!")
-            self.show_solution()
+            print("Solution for Octogram:")
+            print(self.board)
+            print("")
         else:
             print('No solution found...')
 
@@ -499,8 +511,9 @@ class Octogram:
         self.pieces = [p for p in self.pieces if p.get_number() in pieces_required]
 
         if self.solve(r=0, c=0):
-            print("Solution found!")
-            self.show_solution()
+            print("Solution for Rectangle!")
+            print(self.board)
+            print("")
         else:
             print('No solution found...')
 
@@ -521,8 +534,8 @@ class Octogram:
         self.pieces = [p for p in self.pieces if p.get_number() in pieces_required]
 
         if self.solve(r=0, c=0):
-            print("Solution found!")
-            self.show_solution()
+            print("Solution for Zig-zag:")
+            print(self.board)
         else:
             print('No solution found...')
 
@@ -554,7 +567,7 @@ class Octogram:
         return False
 
     def get_valid_pieces(self):
-        pieces_on_board = [x for x in np.unique(np.array(octogram.board)) if x != 0]
+        pieces_on_board = [p for p in np.unique(np.array(octogram.board)) if p != 0]
         return [p for p in octogram.pieces if p.get_number() not in pieces_on_board]
         
     def is_valid(self, r, c, piece, orientation):
@@ -562,49 +575,35 @@ class Octogram:
         if piece.get_number() in self.board:
             return False
         
-        piece_coords = [[r, c] for r, c in np.argwhere(orientation != 0)]
-        row_offset = np.min(np.where(orientation[:,0] == piece.get_number())[0]) # lol
-        board_coords = [[r + p_r - row_offset, c + p_c] for p_r, p_c in piece_coords]
-
-        # Check all rows are in-bounds
-        for x in board_coords:
-            if x[0] >= self.n_rows or x[0] < 0:
-                return False
-
-        # Check all columns are in-bounds
-        for x in board_coords:
-            if x[1] >= self.n_cols or x[1] < 0:
-                return False
-
-        # Check that there is an empty space in each coordinate this piece will occupy
+        board_coords = self.get_board_coords(r, c, piece, orientation)        
         for b_r, b_c in board_coords:
+            # Check all rows are in-bounds
+            if b_r >= self.n_rows or b_r < 0:
+                return False
+            
+            # Check all columns are in-bounds
+            if b_c >= self.n_cols or b_c < 0:
+                return False
+            
+            # Check that there is an empty space in each coordinate this piece will occupy
             if self.board[b_r, b_c] != 0:
                 return False
 
         return True
 
-    def place_piece(self, r, c, piece, orientation):    
-        # Indexes that the piece occupies the space of
-        piece_coords = [[r, c] for r, c in np.argwhere(orientation != 0)]
-        row_offset = np.min(np.where(orientation[:,0] == piece.get_number())[0]) # lol
-        board_coords = [[r + p_r - row_offset, c + p_c] for p_r, p_c in piece_coords]
-
-        for coord in board_coords:
-            x, y = coord
-            self.board[x, y] = piece.get_number()
+    def place_piece(self, r, c, piece, orientation):
+        board_coords = self.get_board_coords(r, c, piece, orientation)
+        for r, c in board_coords:
+            self.board[r, c] = piece.get_number()
 
     def remove_piece(self, piece):
         self.board[np.where(self.board==piece.get_number())] = 0
-
-    def show_solution(self):
-        print(self.board)
 
 if __name__ == '__main__':
     octogram = Octogram()
     octogram.generate_pieces()
     random.shuffle(octogram.pieces)
-    octogram.solve_octogram()
+    # octogram.solve_octogram()
     # octogram.solve_cross()
     # octogram.solve_rectangle()
     # octogram.solve_zig_zag()
-    # print(octogram)
