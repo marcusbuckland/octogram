@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-BOARD_SIZE = 8 # 8x8 - Normal
+BOARD_SIZE = 8
 
 class Piece:
     def __init__(self, orientations):
